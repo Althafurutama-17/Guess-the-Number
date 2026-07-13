@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Duel — Tebak Angka</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ===================== MENU ===================== -->
+    <section id="menu" class="card menu">
+      <h1>🔢 Math Duel</h1>
+      <p class="subtitle">Tebak angka rahasia 1–100 — main sendirian atau berdua!</p>
+
+      <div class="field">
+        <label>Pilih Mode</label>
+        <div class="choices" id="modeChoices">
+          <button class="choice active" data-mode="single">🎯 Single</button>
+          <button class="choice" data-mode="double">👥 Double</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pilih Level (banyaknya tips)</label>
+        <div class="choices" id="levelChoices">
+          <button class="choice active" data-level="mudah">📘 Mudah (SMP)</button>
+          <button class="choice" data-level="normal">📗 Normal (SMA)</button>
+          <button class="choice" data-level="pro">📕 Pro (Kuliah)</button>
+        </div>
+      </div>
+
+      <button id="startBtn" class="primary">Mulai Main ▶</button>
+    </section>
+
+    <!-- ===================== SINGLE ===================== -->
+    <section id="single" class="card game hidden">
+      <div class="topbar">
+        <span class="badge" id="singleLevel">Mudah</span>
+        <span class="score">Skor: <b id="singleScore">0</b> · Tebakan: <b id="singleTries">0</b></span>
+      </div>
+      <h2 class="question">Tebak angka 1–100 🤔</h2>
+      <div class="answer-row">
+        <input id="singleInput" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+        <button class="primary" id="singleSubmit">Tebak! (Enter)</button>
+      </div>
+      <ul id="singleTips" class="tips"></ul>
+      <p id="singleFeedback" class="feedback"></p>
+      <div class="actions">
+        <button id="singleNext" class="ghost hidden">Angka Baru →</button>
+        <button id="singleMenu" class="ghost">⬅ Menu</button>
+      </div>
+    </section>
+
+    <!-- ===================== DOUBLE ===================== -->
+    <section id="double" class="card game hidden">
+      <div class="topbar">
+        <span class="badge" id="doubleLevel">Mudah</span>
+        <span class="score">P1: <b id="p1Score">0</b> · P2: <b id="p2Score">0</b></span>
+      </div>
+      <h2 class="question">Tiap pemain punya angka rahasia BERBEDA (1–100)</h2>
+
+      <div class="players">
+        <div class="player" id="player1">
+          <h3>🟦 Pemain 1</h3>
+          <input class="pInput" id="p1Input" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+          <p class="lock-status" id="p1Status">Belum lock</p>
+          <ul id="p1Tips" class="tips"></ul>
+          <p class="result hidden" id="p1Result"></p>
+        </div>
+        <div class="vs">VS</div>
+        <div class="player" id="player2">
+          <h3>🟥 Pemain 2</h3>
+          <input class="pInput" id="p2Input" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+          <p class="lock-status" id="p2Status">Belum lock</p>
+          <ul id="p2Tips" class="tips"></ul>
+          <p class="result hidden" id="p2Result"></p>
+        </div>
+      </div>
+
+      <p id="doubleFeedback" class="feedback"></p>
+      <div class="actions">
+        <button id="doubleNext" class="ghost hidden">Ronde Berikutnya →</button>
+        <button id="doubleMenu" class="ghost">⬅ Menu</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
