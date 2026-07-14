@@ -33,21 +33,27 @@ function tipsFor(secret, guess, level) {
   const tips = [];
   if (guess < secret) tips.push("🔼 Terlalu kecil");
   else if (guess > secret) tips.push("🔽 Terlalu besar");
+  // Test of Luck: hanya tips arah, tanpa tips tambahan
+  if (level === "luck") return tips;
   tips.push("🔢 Angkanya " + (secret % 2 ? "ganjil" : "genap"));
   if (level === "skill" || level === "brain") {
     tips.push("➗ Habis dibagi 3: " + (secret % 3 === 0 ? "Ya" : "Tidak"));
-    tips.push("🌟 Bilangan prima: " + (isPrime(secret) ? "Ya" : "Tidak"));
+    if (level === "skill") {
+      tips.push("🌟 Bilangan prima: " + (isPrime(secret) ? "Ya" : "Tidak"));
+    }
   }
   if (level === "brain") {
-    tips.push("∑ Jumlah digit: " + String(secret).split("").reduce((a, b) => a + Number(b), 0));
-    tips.push("√ Akar dibulatkan: " + Math.round(Math.sqrt(secret)));
+    const digits = String(secret).split("").map(Number);
+    tips.push("✖ Hasil Perkalian Digit: " + digits.reduce((a, b) => a * b, 1));
+    tips.push("− Pengurangan Digit dari kiri ke Kanan: " + digits.reduce((a, b) => a - b));
+    tips.push("∑ Penjumlahan dari Digit: " + digits.reduce((a, b) => a + b, 0));
   }
   return tips;
 }
 
 const LEVEL_RANGE = {
   luck: { min: 1, max: 10 },
-  skill: { min: 1, max: 100 },
+  skill: { min: 10, max: 100 },
   brain: { min: 100, max: 1000 },
 };
 
@@ -145,6 +151,10 @@ function applyLevelToInputs() {
     el.max = max;
     el.placeholder = ph;
   });
+  // perbarui teks range di baris sendiri (di layar permainan, bukan beranda)
+  const rangeText = `Range angka: ${min}–${max}`;
+  $("singleRange").textContent = rangeText;
+  $("doubleRange").textContent = rangeText;
 }
 
 function startSingle() {
@@ -194,7 +204,7 @@ function submitSingle() {
     state.singleTipCount = Math.min(state.singleTipCount + 1, out.tips.length);
     const shown = out.tips.slice(0, state.singleTipCount);
     renderTips("singleTips", shown);
-    $("singleFeedback").textContent = "❌ Belum tepat, lihat tips di bawah 👇";
+    $("singleFeedback").textContent = "❌ Belum tepat, lihat tips di atas 👆";
     $("singleFeedback").className = "feedback bad";
     $("singleInput").value = "";
     $("singleInput").focus();
@@ -255,8 +265,10 @@ function nextDouble() {
     state.doubleWinner = false;
     newGame();
   }
-  // kalau belum ada pemenang, angka tetap sama, tip count dipertahankan
+  // seri (dua-duanya salah): angka tetap sama agar tips akumulatif 1 per ronde
   resetDoubleRound();
+  // cegah pemrosesan ganda: sembunyikan tombol sampai ronde berikutnya siap
+  $("doubleNext").classList.add("hidden");
 }
 
 function lockPlayer(p) {
@@ -272,6 +284,7 @@ function lockPlayer(p) {
 }
 
 function revealDouble() {
+  clearTipTimers();
   const p1 = parseInt($("p1Input").value.trim(), 10);
   const p2 = parseInt($("p2Input").value.trim(), 10);
   const r1 = checkGuess(1, p1);
@@ -281,7 +294,7 @@ function revealDouble() {
   showResult("p1", r1.correct, p1);
   showResult("p2", r2.correct, p2);
 
-  // tips akumulatif lintas ronde: tiap ronde salah nambah 1 tips (sampai habis)
+  // tips akumulatif: tiap ronde salah nambah 1 tips (satu per satu, bukan sekaligus)
   if (!r1.correct) {
     state.p1TipCount = Math.min(state.p1TipCount + 1, r1.tips.length);
     revealTipsOneByOne("p1Tips", r1.tips.slice(0, state.p1TipCount));
@@ -296,11 +309,15 @@ function revealDouble() {
     state.doubleWinner = true;
     $("doubleFeedback").textContent = "🟦 Pemain 1 menang ronde ini!";
     $("doubleFeedback").className = "feedback good";
+    // tampilkan jawaban benar untuk pemain yang kalah (P2)
+    showLoserAnswer("p2", state.secret2);
   } else if (r2.correct && !r1.correct) {
     state.p2Score += 1;
     state.doubleWinner = true;
     $("doubleFeedback").textContent = "🟥 Pemain 2 menang ronde ini!";
     $("doubleFeedback").className = "feedback good";
+    // tampilkan jawaban benar untuk pemain yang kalah (P1)
+    showLoserAnswer("p1", state.secret1);
   } else if (r1.correct && r2.correct) {
     $("doubleFeedback").textContent = "🤝 Seri! Dua-duanya benar.";
     $("doubleFeedback").className = "feedback";
@@ -317,6 +334,12 @@ function showResult(p, correct, guess) {
   const el = $(`${p}Result`);
   el.textContent = correct ? `✅ Benar (${guess})` : `❌ Salah (${guess})`;
   el.className = `result reveal ${correct ? "good" : "bad"}`;
+}
+
+function showLoserAnswer(p, secret) {
+  const el = $(`${p}Result`);
+  el.textContent = `❌ Salah — Jawaban benar: ${secret}`;
+  el.className = "result reveal bad";
 }
 
 $("p1Input").addEventListener("keydown", (e) => {

@@ -11,7 +11,7 @@
     <!-- ===================== MENU ===================== -->
     <section id="menu" class="card menu">
       <h1>🔢 Math Duel</h1>
-      <p class="subtitle">Tebak angka rahasia 1–100 — main sendirian atau berdua!</p>
+      <p class="subtitle" id="menuSubtitle">Tebak angka rahasia — main sendirian atau berdua!</p>
 
       <div class="field">
         <label>Pilih Mode</label>
@@ -25,7 +25,7 @@
         <label>Pilih Level</label>
         <div class="choices" id="levelChoices">
           <button class="choice" data-level="luck">🎲 Test of Luck (1–10)</button>
-          <button class="choice active" data-level="skill">🎯 Skill Based (1–100)</button>
+          <button class="choice active" data-level="skill">🎯 Skill Based (10–100)</button>
           <button class="choice" data-level="brain">🧠 Brain Burn (100–1000)</button>
         </div>
       </div>
@@ -39,7 +39,8 @@
         <span class="badge" id="singleLevel">Skill Based</span>
         <span class="score">Skor: <b id="singleScore">0</b> · Tebakan: <b id="singleTries">0</b></span>
       </div>
-      <h2 class="question">Tebak angka 1–100 🤔</h2>
+      <h2 class="question" id="singleQuestion">Tebak angka 🤔</h2>
+      <p class="range-line" id="singleRange"></p>
       <div class="answer-row">
         <input id="singleInput" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
         <button class="primary" id="singleSubmit">Tebak! (Enter)</button>
@@ -58,7 +59,8 @@
         <span class="badge" id="doubleLevel">Skill Based</span>
         <span class="score">P1: <b id="p1Score">0</b> · P2: <b id="p2Score">0</b></span>
       </div>
-      <h2 class="question">Tiap pemain punya angka rahasia BERBEDA (1–100)</h2>
+      <p class="range-line" id="doubleRange"></p>
+      <h2 class="question" id="doubleQuestion">Tiap pemain punya angka rahasia BERBEDA</h2>
 
       <div class="players">
         <div class="player" id="player1">
