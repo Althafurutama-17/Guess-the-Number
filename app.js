@@ -1,7 +1,7 @@
 // ===================== State =====================
 const state = {
   mode: "single",
-  level: "mudah",
+  level: "skill",
   secret1: null,
   secret2: null,
   // single
@@ -18,7 +18,7 @@ const state = {
   doubleWinner: false,
 };
 
-const LEVEL_LABEL = { mudah: "Mudah", normal: "Normal", pro: "Pro" };
+const LEVEL_LABEL = { luck: "Test of Luck", skill: "Skill Based", brain: "Brain Burn" };
 
 // ===================== Logika game (dulunya di backend Flask) =====================
 function isPrime(n) {
@@ -34,23 +34,34 @@ function tipsFor(secret, guess, level) {
   if (guess < secret) tips.push("🔼 Terlalu kecil");
   else if (guess > secret) tips.push("🔽 Terlalu besar");
   tips.push("🔢 Angkanya " + (secret % 2 ? "ganjil" : "genap"));
-  if (level === "normal" || level === "pro") {
+  if (level === "skill" || level === "brain") {
     tips.push("➗ Habis dibagi 3: " + (secret % 3 === 0 ? "Ya" : "Tidak"));
     tips.push("🌟 Bilangan prima: " + (isPrime(secret) ? "Ya" : "Tidak"));
   }
-  if (level === "pro") {
+  if (level === "brain") {
     tips.push("∑ Jumlah digit: " + String(secret).split("").reduce((a, b) => a + Number(b), 0));
     tips.push("√ Akar dibulatkan: " + Math.round(Math.sqrt(secret)));
   }
   return tips;
 }
 
+const LEVEL_RANGE = {
+  luck: { min: 1, max: 10 },
+  skill: { min: 1, max: 100 },
+  brain: { min: 100, max: 1000 },
+};
+
+function randInRange(level) {
+  const { min, max } = LEVEL_RANGE[level];
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function newGame() {
-  state.secret1 = Math.floor(Math.random() * 100) + 1;
+  state.secret1 = randInRange(state.level);
   if (state.mode === "double") {
-    state.secret2 = Math.floor(Math.random() * 100) + 1;
+    state.secret2 = randInRange(state.level);
     while (state.secret2 === state.secret1) {
-      state.secret2 = Math.floor(Math.random() * 100) + 1;
+      state.secret2 = randInRange(state.level);
     }
   }
 }
@@ -125,6 +136,17 @@ $("startBtn").addEventListener("click", () => {
 });
 
 // ===================== Single Mode =====================
+function applyLevelToInputs() {
+  const { min, max } = LEVEL_RANGE[state.level];
+  const ph = `${min}–${max}`;
+  ["singleInput", "p1Input", "p2Input"].forEach((id) => {
+    const el = $(id);
+    el.min = min;
+    el.max = max;
+    el.placeholder = ph;
+  });
+}
+
 function startSingle() {
   state.score = 0;
   state.tries = 0;
@@ -132,6 +154,7 @@ function startSingle() {
   $("singleScore").textContent = "0";
   $("singleTries").textContent = "0";
   $("singleLevel").textContent = LEVEL_LABEL[state.level];
+  applyLevelToInputs();
   showScreen("single");
   nextSingle();
 }
@@ -197,6 +220,7 @@ function startDouble() {
   $("p1Score").textContent = "0";
   $("p2Score").textContent = "0";
   $("doubleLevel").textContent = LEVEL_LABEL[state.level];
+  applyLevelToInputs();
   showScreen("double");
   // buat angka rahasia sekali saja, dipakai terus sampai ada pemenang
   newGame();

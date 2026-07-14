@@ -6,10 +6,10 @@ Bisa dimainkan sendiri (Single) atau berdua di satu device (Double) dengan siste
 ## Fitur
 - 🎯 **Mode Single** — tebak sendiri, tiap tebakan salah muncul 1 tips baru (akumulatif).
 - 👥 **Mode Double** — 2 pemain, 1 device. Masing-masing angka rahasia **berbeda**. Kunci jawaban dengan `Enter`, hasil dibuka **bersamaan** saat keduanya lock.
-- 📘 **3 Level Tips**:
-  - **Mudah (SMP)**: arah (besar/kecil) + ganjil/genap
-  - **Normal (SMA)**: + habis dibagi 3 + bilangan prima
-  - **Pro (Kuliah)**: + jumlah digit + akar dibulatkan
+- 📘 **3 Level (range angka + tips)**:
+  - **🎲 Test of Luck (1–10)**: arah (besar/kecil) + ganjil/genap — murni hoki
+  - **🎯 Skill Based (1–100)**: + habis dibagi 3 + bilangan prima
+  - **🧠 Brain Burn (100–1000)**: + jumlah digit + akar dibulatkan
 - Di Double, angka rahasia **tetap sama tiap ronde sampai ada pemenang**; tips akumulatif lintas ronde.
 
 ## Cara Main (lokal)
