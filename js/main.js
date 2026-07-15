@@ -34,25 +34,27 @@ $("doubleMenu").addEventListener("click", () => {
 });
 
 // ===================== Enter flow (no mouse) =====================
-// P1 -> P2 -> Lihat Hasil -> Ronde Baru
+// P1 dan P2 bisa lock dalam urutan apapun. Reveal saat keduanya locked.
 // Handler terpusat agar tidak ada double-trigger antar listener.
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
   if ($("double").classList.contains("hidden")) return; // hanya saat layar double aktif
   const t = e.target;
   if (t && t.tagName === "BUTTON" && t.id !== "doubleNext") return; // jangan tabrakan dgn tombol lain
-  if (state.doublePhase === "p1") {
-    const input = $("p1Input");
-    if (input.value.trim() === "") return;
+
+  // Tentukan player berdasarkan input yang fokus
+  const activeInput = document.activeElement;
+  if (activeInput === $("p1Input") && !state.p1Locked) {
+    if (activeInput.value.trim() === "") return;
     lockPlayer("p1");
-    state.doublePhase = "p2";
+    if (state.p2Locked) return; // reveal sudah dipicu di lockPlayer
     $("p2Input").focus();
-  } else if (state.doublePhase === "p2") {
-    const input = $("p2Input");
-    if (input.value.trim() === "") return;
-    lockPlayer("p2"); // memicu reveal saat keduanya lock
-    state.doublePhase = "result";
-  } else if (state.doublePhase === "result") {
+  } else if (activeInput === $("p2Input") && !state.p2Locked) {
+    if (activeInput.value.trim() === "") return;
+    lockPlayer("p2");
+    if (state.p1Locked) return; // reveal sudah dipicu di lockPlayer
+    $("p1Input").focus();
+  } else if (state.doubleWinner) {
     nextDouble();
   }
 });

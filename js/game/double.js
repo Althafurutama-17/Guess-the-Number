@@ -31,7 +31,7 @@ export function resetDoubleRound() {
   ["p1", "p2"].forEach((p) => {
     $(`${p}Input`).value = "";
     $(`${p}Input`).disabled = false;
-    $(`${p}Status`).textContent = "Belum lock";
+    $(`${p}Status`).textContent = "Belum Dikunci";
     $(`${p}Status`).classList.remove("locked");
     $(`${p}Result`).textContent = "";
     $(`${p}Result`).className = "result hidden";
@@ -42,8 +42,7 @@ export function resetDoubleRound() {
   $("doubleFeedback").className = "feedback";
   updateRoundTurnDisplay();
   $("doubleNext").classList.add("hidden");
-  state.doublePhase = "p1";
-  $("doubleHint").textContent = "⌨ P1 ketik angka lalu Enter → fokus pindah ke P2";
+  $("doubleHint").textContent = "Tekan Enter untuk mengunci jawaban";
   $("p1Input").focus();
 }
 
@@ -69,7 +68,6 @@ export function lockPlayer(p) {
   $(`${p}Status`).classList.add("locked");
   input.closest(".player").classList.add("locked");
   if (state.p1Locked && state.p2Locked) revealDouble();
-  else if (p === "p1") $("doubleHint").textContent = "⌨ P2 ketik angka lalu Enter → lihat hasil";
 }
 
 export function updateRoundTurnDisplay() {
@@ -116,7 +114,7 @@ export function revealDouble() {
     $("doubleFeedback").className = "feedback";
     continueSameRound();
   } else {
-    $("doubleFeedback").textContent = "🤝 Seri! Dua-duanya salah — secret tetap sama, coba lagi!";
+    $("doubleFeedback").textContent = "🤝 Seri! Dua-duanya salah — Angka Rahasia tetap sama, coba lagi!";
     $("doubleFeedback").className = "feedback";
     continueSameRound();
   }
@@ -127,7 +125,6 @@ export function revealDouble() {
 // Ada pemenang -> tampilkan tombol untuk mulai Round BARU
 export function endRound() {
   $("doubleNext").classList.remove("hidden");
-  state.doublePhase = "result";
   $("doubleHint").textContent = "⌨ Enter untuk ronde baru →";
 }
 
@@ -139,7 +136,7 @@ export function continueSameRound() {
   ["p1", "p2"].forEach((p) => {
     $(`${p}Input`).value = "";
     $(`${p}Input`).disabled = false;
-    $(`${p}Status`).textContent = "Belum lock";
+    $(`${p}Status`).textContent = "Belum Dikunci";
     $(`${p}Status`).classList.remove("locked");
     $(`${p}Result`).textContent = "";
     $(`${p}Result`).className = "result hidden";
@@ -147,8 +144,7 @@ export function continueSameRound() {
   });
   state.p1Locked = false;
   state.p2Locked = false;
-  state.doublePhase = "p1";
-  $("doubleHint").textContent = `⌨ Seri! Secret sama — Turn ${state.doubleTurn}, tebak lagi →`;
+  $("doubleHint").textContent = `Tekan Enter untuk mengunci jawaban`;
   $("p1Input").focus();
 }
 

@@ -19,5 +19,4 @@ export const state = {
   doubleWinner: false,
   doubleRound: 1,
   doubleTurn: 1,
-  doublePhase: "p1", // p1 -> p2 -> result (alur Enter)
 };
