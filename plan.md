@@ -1,15 +1,25 @@
-Ide :
-- Fitur multiiplayer dimana para player kasih angka untuk ditebak oleh Pemain lain
-
 v2.2
-- Hapus Kode dan File tidak relevan [Done]
-- Simplify ke mode Pro terlebih dahulu [Done]
-- Tombol Enter sebagai Tombol Multi Purpose [Done]
-- Hapus level Test of Luck & Skill Based dari kode, diarsipkan ke arsip-level.md [Done]
+- Remove irrelevant code and files [Done]
+- Simplify to Pro mode first [Done]
+- Enter button as a multi-purpose button [Done]
+- Remove Test of Luck & Skill Based levels from code, archived to arsip-level.md [Done]
 
 v2.3
-- Pecah file menjadi beberapa
+- Added terms "Round" and "Turn" [Done]
+- Bug fixes on number not changing after next round [Done]
+- Split files within the code into several folder of files [Done]
+- Added Iconify SVG icons (local, offline) [Done]
+- Enhance visuals with icons [Done]
 
 v3.0
-- Fitur multiiplayer dimana para player kasih angka untuk ditebak oleh Pemain lain
-- Penambahan Tips Tips
+- Multiplayer feature where players give numbers for other players to guess
+- Add more tips
+
+v4.0
+- Battle feature with HP
+- Roguelike mode with dice
+    - After input and a wrong guess, the player gets a choice (with a percentage chance)
+        1. New tip
+        2. Shield for X turns
+        3. Add HP
+        4. Reduce opponent's HP 

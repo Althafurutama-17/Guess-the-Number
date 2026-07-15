@@ -1,35 +1,76 @@
-# 🔢 Math Duel — Tebak Angka
+# 🔢 Math Duel — Number Guessing Game
 
-Game tebak angka rahasia berbasis web (HTML + CSS + JavaScript murni, **tanpa backend/server**).
-Range angka bervariasi tergantung level (1–10 / 1–100 / 100–1000).
-Bisa dimainkan sendiri (Single) atau berdua di satu device (Double) dengan sistem *lock* & *reveal* bersamaan.
+A web-based secret number guessing game (plain HTML + CSS + JavaScript, **no backend/server**).
+The number range varies by level (1–10 / 1–100 / 100–1000).
+Play alone (Single) or with a friend on one device (Double) using a *lock* & *reveal* system.
 
-## Fitur
-- 🎯 **Mode Single** — tebak sendiri, tiap tebakan salah muncul 1 tips baru (akumulatif).
-- 👥 **Mode Double** — 2 pemain, 1 device. Masing-masing angka rahasia **berbeda**. Kunci jawaban dengan `Enter`, hasil dibuka **bersamaan** saat keduanya lock.
-- 🧠 **Mode Pro (Brain Burn, 100–1000)** — satu-satunya level yang aktif. Tips: arah (besar/kecil), ganjil/genap, habis dibagi 3, perkalian digit, pengurangan digit kiri-ke-kanan, dan penjumlahan digit.
-- Di Double, angka rahasia **tetap sama tiap ronde sampai ada pemenang**; tips akumulatif lintas ronde.
+## Features
+- 🎯 **Single Mode** — guess on your own; each wrong guess reveals 1 new tip (cumulative).
+- 👥 **Double Mode** — 2 players, 1 device. Each player has a **different** secret number. Lock your answer with `Enter`; results are revealed **together** once both are locked.
+- 🧠 **Pro Mode (Brain Burn, 100–1000)** — the only active level. Tips: direction (higher/lower), odd/even, divisible by 3, digit product, left-to-right digit subtraction, and digit sum.
+- 🔁 **Round & Turn (Double):** 1 **Round** = 1 secret number. Each **Turn** = P1 & P2 guess once (tips cumulative per Turn). A Round ends when there is a winner; `Enter` / the **New Round** button starts the next Round with a **NEW** secret number and Turn reset to 1. A draw → continues to the next Turn within the **same** Round (number stays the same).
 
-> 📦 Level **Test of Luck** dan **Skill Based** telah dihapus dari kode (lihat `arsip-level.md` untuk dokumentasi arsipnya).
+> 📦 The **Test of Luck** and **Skill Based** levels were removed from the code (see `arsip-level.md` for the archived documentation).
 
-## Cara Main (lokal)
-Buka `index.html` langsung di browser (double-click), atau lewat server statis:
+## How to Run (locally)
+The game uses **ES Modules** (`<script type="module">`), so it **must** be served via a static server (double-clicking `file://` will not work due to CORS):
 ```bash
-# opsional, kalau mau lewat http
+# from the project folder
 python -m http.server 8000
-# buka http://localhost:8000
+# open http://localhost:8000
 ```
-Tidak perlu install apa-apa — game 100% berjalan di browser.
+No installation needed — the game runs 100% in the browser. (On GitHub Pages it runs directly over HTTPS without a local server.)
 
-## Catatan
-- Game ini *single-device* untuk mode Double (2 orang bergantian di 1 keyboard), bukan multiplayer online.
-- Karena tanpa server, angka rahasia di-generate di sisi browser (`Math.random`).
+## File Structure
+```
+index.html
+css/
+  style.css
+  icons/        # local SVG icons (offline)
+js/
+  main.js        # entry point: init, listeners, Enter flow
+  config.js      # LEVEL_LABEL, LEVEL_RANGE
+  state.js       # state object (singleton)
+  dom.js         # $, showScreen, renderTips, revealTipsOneByOne
+  game/
+    logic.js     # tipsFor, randInRange, newGame, checkGuess
+    single.js    # startSingle, nextSingle, submitSingle
+    double.js    # startDouble, resetDoubleRound, nextDouble,
+                # revealDouble, endRound, continueSameRound, lockPlayer
+```
 
-## 📌 Riwayat Versi
+## Notes
+- This is a *single-device* game for Double mode (2 people take turns on 1 keyboard), not online multiplayer.
+- Since there is no server, the secret number is generated in the browser (`Math.random`).
 
-| Versi | Tanggal | Perubahan |
-|-------|---------|-----------|
-| **v1.0** | — | Rilis awal. Mode Single & Double. 3 level: **Mudah (1–100)**, **Normal (1–100)**, **Pro (1–100)** dengan tips matematika bertingkat. |
-| **v2.0** | 2026-07-14 | **Diubah:** Sistem level dirombak total menjadi 3 level berbasis range angka — 🎲 **Test of Luck (1–10)**, 🎯 **Skill Based (1–100)**, 🧠 **Brain Burn (100–1000)**. Tips disesuaikan per level (Luck = dasar, Skill = + bagi 3 & prima, Brain = + jumlah digit & akar). Input `min`/`max`/`placeholder` mengikuti level secara dinamis. **Dihapus:** level Mudah/Normal/Pro lama. **Ditambah:** tabel riwayat versi ini. |
-| **v2.1** | 2026-07-14 | **Diubah:** range **Skill Based** menjadi **10–100**. Teks range (subtitle, pertanyaan Single & Double) kini dinamis mengikuti level (tidak lagi hardcoded 1–100). **Ditambah:** di mode Double, bila satu pemain menang, jawaban benar ditampilkan untuk pemain yang kalah. |
-| **v2.2** | 2026-07-15 | **Fokus Mode Pro:** level **Test of Luck** dan **Skill Based** **dihapus dari kode** (UI pilihan level dihilangkan, game langsung pakai Pro/Brain Burn 100–1000). Keduanya **diarsipkan** ke `arsip-level.md`. **Selesai:** simplify ke Mode Pro, tombol Enter multi-purpose, hapus kode/file tidak relevan. |
+## 📌 Version History
+
+**v1.0 (Initial Release)**
+- Released the first version with Single & Double modes.
+- Shipped 3 levels — **Easy (1–100)**, **Normal (1–100)**, **Pro (1–100)** — with tiered math tips.
+
+**v2.0 (14 July 2026)**
+- Overhauled the level system into 3 range-based levels — 🎲 **Test of Luck (1–10)**, 🎯 **Skill Based (1–100)**, 🧠 **Brain Burn (100–1000)**.
+- Adjusted tips per level (Luck = basic, Skill = + divisible by 3 & prime, Brain = + digit sum & root).
+- Made input `min`/`max`/`placeholder` follow the level dynamically.
+- Removed the old Easy/Normal/Pro levels.
+- Added this version history.
+
+**v2.1 (14 July 2026)**
+- Set the **Skill Based** range to **10–100**.
+- Made the range text (subtitle, Single & Double questions) dynamic per level instead of hardcoded to 1–100.
+- Showed the correct answer to the losing player when a player wins in Double mode.
+
+**v2.2 (15 July 2026)**
+- Removed the **Test of Luck** and **Skill Based** levels from the code and archived both to `arsip-level.md`.
+- Removed the level picker UI; the game now uses Pro/Brain Burn (100–1000) directly.
+- Simplified the game to Pro mode.
+- Made the Enter button multi-purpose.
+- Removed irrelevant code and files.
+
+**v2.3 (15 July 2026)**
+- Added terms "Round" and "Turn".
+- Fixed bug on number not changing after next round.
+- Split files into several folders of files.
+- Added Iconify SVG icons (local, offline).
+- Enhanced visuals with icons.
