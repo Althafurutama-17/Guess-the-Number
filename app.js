@@ -1,7 +1,7 @@
 // ===================== State =====================
 const state = {
   mode: "single",
-  level: "skill",
+  level: "brain",
   secret1: null,
   secret2: null,
   // single
@@ -16,32 +16,18 @@ const state = {
   p1TipCount: 0,
   p2TipCount: 0,
   doubleWinner: false,
+  doublePhase: "p1", // p1 -> p2 -> result (alur Enter)
 };
 
-const LEVEL_LABEL = { luck: "Test of Luck", skill: "Skill Based", brain: "Brain Burn" };
+const LEVEL_LABEL = { brain: "Pro (Brain Burn)" };
 
-// ===================== Logika game (dulunya di backend Flask) =====================
-function isPrime(n) {
-  if (n < 2) return false;
-  for (let i = 2; i <= Math.sqrt(n); i++) {
-    if (n % i === 0) return false;
-  }
-  return true;
-}
-
+// ===================== Logika game =====================
 function tipsFor(secret, guess, level) {
   const tips = [];
   if (guess < secret) tips.push("🔼 Terlalu kecil");
   else if (guess > secret) tips.push("🔽 Terlalu besar");
-  // Test of Luck: hanya tips arah, tanpa tips tambahan
-  if (level === "luck") return tips;
   tips.push("🔢 Angkanya " + (secret % 2 ? "ganjil" : "genap"));
-  if (level === "skill" || level === "brain") {
-    tips.push("➗ Habis dibagi 3: " + (secret % 3 === 0 ? "Ya" : "Tidak"));
-    if (level === "skill") {
-      tips.push("🌟 Bilangan prima: " + (isPrime(secret) ? "Ya" : "Tidak"));
-    }
-  }
+  tips.push("➗ Habis dibagi 3: " + (secret % 3 === 0 ? "Ya" : "Tidak"));
   if (level === "brain") {
     const digits = String(secret).split("").map(Number);
     tips.push("✖ Hasil Perkalian Digit: " + digits.reduce((a, b) => a * b, 1));
@@ -52,8 +38,6 @@ function tipsFor(secret, guess, level) {
 }
 
 const LEVEL_RANGE = {
-  luck: { min: 1, max: 10 },
-  skill: { min: 10, max: 100 },
   brain: { min: 100, max: 1000 },
 };
 
@@ -126,14 +110,6 @@ $("modeChoices").addEventListener("click", (e) => {
   $("modeChoices").querySelectorAll(".choice").forEach((b) => b.classList.remove("active"));
   btn.classList.add("active");
   state.mode = btn.dataset.mode;
-});
-
-$("levelChoices").addEventListener("click", (e) => {
-  const btn = e.target.closest(".choice");
-  if (!btn) return;
-  $("levelChoices").querySelectorAll(".choice").forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
-  state.level = btn.dataset.level;
 });
 
 $("startBtn").addEventListener("click", () => {
@@ -254,6 +230,8 @@ function resetDoubleRound() {
   $("doubleFeedback").textContent = "";
   $("doubleFeedback").className = "feedback";
   $("doubleNext").classList.add("hidden");
+  state.doublePhase = "p1";
+  $("doubleHint").textContent = "⌨ P1 ketik angka lalu Enter → fokus pindah ke P2";
   $("p1Input").focus();
 }
 
@@ -281,6 +259,7 @@ function lockPlayer(p) {
   $(`${p}Status`).classList.add("locked");
   input.closest(".player").classList.add("locked");
   if (state.p1Locked && state.p2Locked) revealDouble();
+  else if (p === "p1") $("doubleHint").textContent = "⌨ P2 ketik angka lalu Enter → lihat hasil";
 }
 
 function revealDouble() {
@@ -328,6 +307,8 @@ function revealDouble() {
   $("p1Score").textContent = state.p1Score;
   $("p2Score").textContent = state.p2Score;
   $("doubleNext").classList.remove("hidden");
+  state.doublePhase = "result";
+  $("doubleHint").textContent = "⌨ Enter untuk ronde berikutnya →";
 }
 
 function showResult(p, correct, guess) {
@@ -342,12 +323,29 @@ function showLoserAnswer(p, secret) {
   el.className = "result reveal bad";
 }
 
-$("p1Input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") lockPlayer("p1");
+// Alur Enter tanpa mouse: P1 -> P2 -> Lihat Hasil -> Ronde Berikutnya
+// Handler terpusat agar tidak ada double-trigger antar listener.
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  if ($("double").classList.contains("hidden")) return; // hanya saat layar double aktif
+  const t = e.target;
+  if (t && t.tagName === "BUTTON" && t.id !== "doubleNext") return; // jangan tabrakan dgn tombol lain
+  if (state.doublePhase === "p1") {
+    const input = $("p1Input");
+    if (input.value.trim() === "") return;
+    lockPlayer("p1");
+    state.doublePhase = "p2";
+    $("p2Input").focus();
+  } else if (state.doublePhase === "p2") {
+    const input = $("p2Input");
+    if (input.value.trim() === "") return;
+    lockPlayer("p2"); // memicu reveal saat keduanya lock
+    state.doublePhase = "result";
+  } else if (state.doublePhase === "result") {
+    nextDouble();
+  }
 });
-$("p2Input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") lockPlayer("p2");
-});
+
 $("doubleNext").addEventListener("click", nextDouble);
 $("doubleMenu").addEventListener("click", () => {
   clearTipTimers();

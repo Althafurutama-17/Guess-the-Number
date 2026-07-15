@@ -21,14 +21,7 @@
         </div>
       </div>
 
-      <div class="field">
-        <label>Pilih Level</label>
-        <div class="choices" id="levelChoices">
-          <button class="choice" data-level="luck">🎲 Test of Luck (1–10)</button>
-          <button class="choice active" data-level="skill">🎯 Skill Based (10–100)</button>
-          <button class="choice" data-level="brain">🧠 Brain Burn (100–1000)</button>
-        </div>
-      </div>
+      <p class="subtitle">Mode <b>Pro (Brain Burn)</b> — range 100–1000</p>
 
       <button id="startBtn" class="primary">Mulai Main ▶</button>
     </section>
@@ -36,13 +29,13 @@
     <!-- ===================== SINGLE ===================== -->
     <section id="single" class="card game hidden">
       <div class="topbar">
-        <span class="badge" id="singleLevel">Skill Based</span>
+        <span class="badge" id="singleLevel">Pro (Brain Burn)</span>
         <span class="score">Skor: <b id="singleScore">0</b> · Tebakan: <b id="singleTries">0</b></span>
       </div>
       <h2 class="question" id="singleQuestion">Tebak angka 🤔</h2>
       <p class="range-line" id="singleRange"></p>
       <div class="answer-row">
-        <input id="singleInput" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+        <input id="singleInput" type="number" min="100" max="1000" placeholder="100–1000" autocomplete="off" />
         <button class="primary" id="singleSubmit">Tebak! (Enter)</button>
       </div>
       <ul id="singleTips" class="tips"></ul>
@@ -56,7 +49,7 @@
     <!-- ===================== DOUBLE ===================== -->
     <section id="double" class="card game hidden">
       <div class="topbar">
-        <span class="badge" id="doubleLevel">Skill Based</span>
+        <span class="badge" id="doubleLevel">Pro (Brain Burn)</span>
         <span class="score">P1: <b id="p1Score">0</b> · P2: <b id="p2Score">0</b></span>
       </div>
       <p class="range-line" id="doubleRange"></p>
@@ -65,7 +58,7 @@
       <div class="players">
         <div class="player" id="player1">
           <h3>🟦 Pemain 1</h3>
-          <input class="pInput" id="p1Input" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+          <input class="pInput" id="p1Input" type="number" min="100" max="1000" placeholder="100–1000" autocomplete="off" />
           <p class="lock-status" id="p1Status">Belum lock</p>
           <ul id="p1Tips" class="tips"></ul>
           <p class="result hidden" id="p1Result"></p>
@@ -73,7 +66,7 @@
         <div class="vs">VS</div>
         <div class="player" id="player2">
           <h3>🟥 Pemain 2</h3>
-          <input class="pInput" id="p2Input" type="number" min="1" max="100" placeholder="1–100" autocomplete="off" />
+          <input class="pInput" id="p2Input" type="number" min="100" max="1000" placeholder="100–1000" autocomplete="off" />
           <p class="lock-status" id="p2Status">Belum lock</p>
           <ul id="p2Tips" class="tips"></ul>
           <p class="result hidden" id="p2Result"></p>
@@ -81,6 +74,7 @@
       </div>
 
       <p id="doubleFeedback" class="feedback"></p>
+      <p id="doubleHint" class="hint"></p>
       <div class="actions">
         <button id="doubleNext" class="ghost hidden">Ronde Berikutnya →</button>
         <button id="doubleMenu" class="ghost">⬅ Menu</button>
